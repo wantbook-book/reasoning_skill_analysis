@@ -121,7 +121,6 @@ class ActivationsStore:
             exclude_special_tokens = torch.tensor(
                 exclude_special_tokens, dtype=torch.long, device=device
             )
-        # 获取 data_files 参数（仅 LanguageModelSAERunnerConfig 有此属性）
         data_files = getattr(cfg, 'data_files', None)
 
         return cls(
@@ -234,7 +233,6 @@ class ActivationsStore:
             model_kwargs = {}
         self.model_kwargs = model_kwargs
         if isinstance(dataset, str):
-            # 支持从本地文件加载数据
             self.dataset = load_dataset(
                 dataset,
                 split="train",
