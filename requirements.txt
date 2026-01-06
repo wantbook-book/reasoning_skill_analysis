@@ -1,0 +1,9 @@
+vllm==0.9.2
+"transformer<4.54.0"
+sae_lens==6.22.3
+umap-learn
+debugpy
+math-verify[antlr4_13_2]
+openai
+sae-dashboard
+h5py

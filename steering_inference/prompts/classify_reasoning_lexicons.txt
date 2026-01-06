@@ -1,0 +1,103 @@
+You are an annotation assistant. You will be given a list of n-gram phrases (1–5 grams), one per line.
+
+Goal:
+Build a lexicon of MODE TRIGGERS that can nudge a language model into using one of the following reasoning skills during generation.
+These phrases are discourse-level or meta-cognitive cues (style/structure triggers), NOT domain-specific operations.
+
+Reasoning skills:
+(1) DR = Deep Reasoning:
+    Cues that push a linear, step-by-step deductive progression (structured derivation, “therefore…”, “it follows…”, “step by step…”, “first/next/then…”).
+(2) EE = Extensive Exploration:
+    Cues that open branches / alternatives / hypotheses (e.g., “alternatively…”, “what if…”, “another possibility…”, “on the other hand…”).
+(3) SR = Sensible Reflection:
+    Cues that pause to verify, reconsider, or backtrack (e.g., “wait…”, “hold on…”, “let me check…”, “does that make sense…”, “reconsider…”).
+    IMPORTANT: SR triggers do NOT need to state an error outcome (e.g., “I was wrong” is optional and usually unnecessary).
+
+Labels:
+- "DR", "EE", "SR", or "NONE" (discard)
+
+Strength (only if label != "NONE"):
+- "core": strongly and explicitly triggers the skill mode (e.g., “alternatively”, “let me check”, “step by step”).
+- "scaffold": weaker cue that still nudges the mode (e.g., “therefore”, “maybe”).
+If label="NONE", strength="none".
+
+Hard discard rules (label="NONE"):
+- Pure function words / stopwords with negligible mode steering: "and", "the", "of", "to", "a", etc.
+- Single-letter variables or isolated symbols: "x", "y", "a", "=", "+", etc.
+- Domain-specific operation verbs or math/algorithm actions (we are NOT collecting these):
+  e.g., "compute", "calculate", "simplify", "solve", "factor", "expand", "derive" → label as NONE
+  (unless the phrase is clearly a discourse-mode cue like "step by step", not an operation.)
+- Purely summarizing / rhetorical closers that do not trigger reasoning mode: "in conclusion", etc.
+
+Tie-break rule (single-label):
+Assign exactly ONE of DR/EE/SR if kept.
+If ambiguous:
+1) SR if it expresses checking/backtracking/reconsidering
+2) EE if it expresses alternatives/branching/hypotheticals
+3) DR otherwise (structured progression markers)
+If still weak/unclear → NONE.
+
+Output format (STRICT JSONL):
+Return exactly one JSON object per input phrase, in the SAME order.
+No extra text.
+
+Schema:
+{
+  "phrase": <original phrase>,
+  "label": "DR"|"EE"|"SR"|"NONE",
+  "strength": "core"|"scaffold"|"none",
+  "reason": <<= 10 words>
+}
+
+Few-shot examples:
+
+INPUT:
+therefore
+thus
+step by step
+first
+next
+it follows that
+alternatively
+on the other hand
+what if
+another possibility
+maybe
+let me check
+hold on
+does this make sense
+reconsider
+i was wrong
+compute
+simplify
+x
+and
+in conclusion
+
+OUTPUT:
+{"phrase":"therefore","label":"DR","strength":"scaffold","reason":"deductive progression cue"}
+{"phrase":"thus","label":"DR","strength":"scaffold","reason":"signals logical continuation"}
+{"phrase":"step by step","label":"DR","strength":"core","reason":"explicit structured reasoning mode"}
+{"phrase":"first","label":"DR","strength":"scaffold","reason":"introduces ordered steps"}
+{"phrase":"next","label":"DR","strength":"scaffold","reason":"continues stepwise progression"}
+{"phrase":"it follows that","label":"DR","strength":"core","reason":"explicit deduction marker"}
+{"phrase":"alternatively","label":"EE","strength":"core","reason":"opens an alternative branch"}
+{"phrase":"on the other hand","label":"EE","strength":"core","reason":"contrasts another route"}
+{"phrase":"what if","label":"EE","strength":"core","reason":"introduces hypothetical branch"}
+{"phrase":"another possibility","label":"EE","strength":"core","reason":"suggests a new hypothesis"}
+{"phrase":"maybe","label":"EE","strength":"scaffold","reason":"softens into exploring possibilities"}
+{"phrase":"let me check","label":"SR","strength":"core","reason":"explicit verification cue"}
+{"phrase":"hold on","label":"SR","strength":"core","reason":"pause and potential backtrack"}
+{"phrase":"does this make sense","label":"SR","strength":"core","reason":"self-consistency check cue"}
+{"phrase":"reconsider","label":"SR","strength":"core","reason":"signals revising the trajectory"}
+{"phrase":"i was wrong","label":"NONE","strength":"none","reason":"outcome statement, not needed"}
+{"phrase":"compute","label":"NONE","strength":"none","reason":"domain-specific operation verb"}
+{"phrase":"simplify","label":"NONE","strength":"none","reason":"domain-specific operation verb"}
+{"phrase":"x","label":"NONE","strength":"none","reason":"single-letter variable"}
+{"phrase":"and","label":"NONE","strength":"none","reason":"generic function word"}
+{"phrase":"in conclusion","label":"NONE","strength":"none","reason":"closing phrase, weak trigger"}
+
+Now process the real INPUT list below.
+
+INPUT:
+<<<PASTE YOUR PHRASES HERE, ONE PER LINE>>>

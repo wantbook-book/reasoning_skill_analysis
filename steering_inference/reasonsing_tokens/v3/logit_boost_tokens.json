@@ -1,0 +1,30 @@
+{
+  "deep_reasoning": [
+    "therefore",
+    "thus",
+    "hence",
+    "finally",
+    "lastly"
+  ],
+  "extensive_exploration": [
+    "alternatively",
+    "another approach",
+    "another method",
+    "another way",
+    "another idea",
+    "another thought",
+    "different approach",
+    "different method",
+    "different way"
+  ],
+  "sensible_reflection": [
+    "wait",
+    "recall",
+    "check",
+    "verify",
+    "confirm",
+    "double-check",
+    "re-examine",
+    "cross-verify"
+  ]
+}

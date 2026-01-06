@@ -1,0 +1,11 @@
+{
+    "deep_reasoning": [
+        "therefore", "thus", "hence", "let me compute", "let me write"
+    ],
+    "extensive_exploration": [
+        "alternatively", "maybe", "perhaps"
+    ],
+    "sensible_reflection": [
+        "wait", "hmm", "let me think", "let me verify", "let me double-check", "let me check"
+    ]
+}
